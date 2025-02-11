@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackathon-api
+  namespace: hackathon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackathon-api
+  template:
+    metadata:
+      labels:
+        app: hackathon-api
+    spec:
+      containers:
+        - name: hackathon-api
+          image: snackbarapi/hackathon-api:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: hackathon-api-secrets
+                  key: AWS_REGION
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hackathon-api-secrets
+                  key: AWS_ACCESS_KEY
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hackathon-api-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_AUTH_LAMBDA_FUNC_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: hackathon-api-secrets
+                  key: AWS_AUTH_LAMBDA_FUNC_NAME
+            - name: AWS_VIDEO_LAMBDA_FUNC_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: hackathon-api-secrets
+                  key: AWS_VIDEO_LAMBDA_FUNC_NAME
+
+          resources:
+            requests:
+              cpu: 100m
